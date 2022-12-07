@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: rapadura
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - gem-data:/usr/local/bundle
+
+
+  app:
+    build: .
+    command: bundle exec rails s -p 3000 -b 0.0.0.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: rapadura
+    volumes:
+      - .:/home/app/api
+    entrypoint: ./entrypoint.sh
+
+volumes:
+  db-data:
+    driver: local
+  gem-data:
+    driver: local
